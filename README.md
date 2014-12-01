@@ -9,6 +9,10 @@ This module was inspired by, and some of the implementation was borrowed from [n
 
 The reason I decided to create something new was that I wanted to use Cypher and have a less generic (and chatty) connection to the graph database.
 
+## Warning Regarding Testing
+
+Currently, the test code will erase all nodes in the Neo4J database prior to running the tests.
+
 ## Short Example
 
 ```
