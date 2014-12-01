@@ -2,16 +2,21 @@
   "name": "neo4j-cypher-acl",
   "version": "0.0.1",
   "description": "Neo4J implementation of Access Control Lists via Cypher",
-  "main": "index.js",
-  "scripts": {
-    "test": "npm test"
-  },
+  "main": "./index.js",
+  "private": false,
   "keywords": [
     "neo4j",
     "graph",
     "acl",
     "social"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willmitchell/neo4j-cypher-acl"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
   "author": "Will Mitchell",
   "license": "MIT",
   "dependencies": {
