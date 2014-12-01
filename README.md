@@ -1,6 +1,6 @@
 #node-graph-acl
 
-[![Build Status](https://travis-ci.org/willmitchell/neo4j-cypher-acl.svg?branch=master)](https://travis-ci.org/willmitchell/neo4j-cypher-acl)
+[https://travis-ci.org/willmitchell/neo4j-cypher-acl.svg?branch=master](https://travis-ci.org/willmitchell/neo4j-cypher-acl)
 
 Node Graph Cypher ACL is a module that uses Neo4J and the Cypher query language to provide support for
 Access Control Lists (ACL).
