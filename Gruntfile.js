@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   'use strict';
   grunt.initConfig({
     jshint: {
@@ -36,22 +36,48 @@ module.exports = function(grunt) {
         }
       }
     },
-    jsdoc : {
-      dist : {
+    jsdoc: {
+      dist: {
         src: ['lib/**/*.js', 'spec/**/*.js'],
         options: {
           destination: 'doc'
         }
       }
+    },
+    // Compiles CoffeeScript to JavaScript
+    // Compiles CoffeeScript to JavaScript
+    coffee: {
+      server: {
+        //watch: "server",
+
+        options: {
+          sourceMap: true,
+          sourceRoot: '',
+          bare: true
+        },
+        files: [
+          {
+            //bare: true,
+            expand: true,
+            //cwd: 'server',
+            src: [
+              'lib/**/*.coffee',
+            ],
+            //dest: '',
+            ext: '.js'
+          },
+        ]
+      }
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-lintspaces');
   grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.loadNpmTasks('grunt-jsdoc');
 
-  grunt.registerTask('test', ['jshint', 'jasmine_node', 'lintspaces']);
+  grunt.registerTask('test', ['coffee','jshint', 'jasmine_node', 'lintspaces']);
   grunt.registerTask('doc', ['jsdoc']);
   grunt.registerTask('dev', ['test', 'doc']);
   grunt.registerTask('default', ['dev']);
