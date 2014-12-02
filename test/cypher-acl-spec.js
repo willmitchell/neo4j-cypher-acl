@@ -1,4 +1,4 @@
-var CACL = require("../index.js");
+var CACL = require("../lib/index.js");
 var debug = require('debug')('CACL-test');
 var assert = require('assert');
 var async = require('async');
@@ -79,7 +79,7 @@ describe('Neo4J User/Group Ops', function () {
     cacl.create_asset(uid, aid, "/", function (err, res) {
       if (err) {
         debug("problem creating an asset");
-        return cb(err);
+        return ;
       }
       debug("create_asset returned: " + res);
 
@@ -87,7 +87,19 @@ describe('Neo4J User/Group Ops', function () {
       done();
     });
   });
+  aid = "910";
+  it('should create another asset and associate it with the root group', function (done) {
+    cacl.create_asset(uid, aid, "/", function (err, res) {
+      if (err) {
+        debug("problem creating an asset");
+        return;
+      }
+      debug("create_asset returned: " + res);
 
+      assert.equal(res.aid, aid);
+      done();
+    });
+  });
   it('should delete User by uid', function (done) {
     cacl.delete_user(uid, function (err, res) {
       if (err) {
@@ -123,7 +135,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   var gen_user = function (uid, cb) {
     cacl.create_user(uid, function (err, res) {
       if (err) {
-        return cb("fail within neo_dao_spec.js");
+        return cb("failed to generate user within U-U conn lifecycle");
       }
       cb(null, res);
     });
@@ -154,20 +166,22 @@ describe('Neo4J U-U Connection lifecycle', function () {
     });
   });
 
+
+  var cids = [];
+
   it('should create connections between users', function (done) {
-    var cids = [];
     async.parallel([
       function (cb) {
-        cacl.initiate_user_user_connection("uid1", "uid2", "hello", cb);
+        cacl.create_user_user_connection("uid1", "uid2", "hello", cb);
       },
       function (cb) {
-        cacl.initiate_user_user_connection("uid1", "uid3", "hello", cb);
+        cacl.create_user_user_connection("uid1", "uid3", "hello", cb);
       },
       function (cb) {
-        cacl.initiate_user_user_connection("uid1", "uid4", "hello", cb);
+        cacl.create_user_user_connection("uid1", "uid4", "hello", cb);
       },
       function (cb) {
-        cacl.initiate_user_user_connection("uid2", "uid3", "hello", cb);
+        cacl.create_user_user_connection("uid2", "uid3", "hello", cb);
       },
     ], function (err, res) {
       if (err) {
@@ -181,8 +195,35 @@ describe('Neo4J U-U Connection lifecycle', function () {
     });
   });
 
+  it('should confirm several invitations', function (done) {
+
+    async.parallel([
+      function (cb) {
+        cacl.update_connection("uid1", "uid2", true, "hi", cb);
+      },
+      function (cb) {
+        cacl.update_connection("uid1", "uid3", true, "hi", cb);
+      },
+      function (cb) {
+        cacl.update_connection("uid1", "uid4", false, "no", cb);
+      },
+      function (cb) {
+        cacl.update_connection("uid2", "uid3", false, "no", cb);
+      },
+    ], function (err, res) {
+      if (err) {
+        debug('error: ' + err);
+        throw err;
+      }
+
+      cids = res;
+      debug("relationships updated: " + cids);
+      done();
+    });
+  });
+
   it('should verify the Unique connection', function (done) {
-    cacl.list_connections_for_user(uid1, function (err, res) {
+    cacl.list_connections(uid1, function (err, res) {
       if (err) {
         debug('error: ' + err);
         throw err;
@@ -192,7 +233,6 @@ describe('Neo4J U-U Connection lifecycle', function () {
       assert.ok(res, "must have some results");
       done();
     });
-
   });
 
 });

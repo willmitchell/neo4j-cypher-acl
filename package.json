@@ -2,7 +2,7 @@
   "name": "neo4j-cypher-acl",
   "version": "0.0.1",
   "description": "Neo4J implementation of Access Control Lists via Cypher",
-  "main": "./index.js",
+  "main": "./out/lib/cypher-acl.js",
   "private": false,
   "keywords": [
     "neo4j",
@@ -22,17 +22,24 @@
   "dependencies": {
     "async": "^0.9.0",
     "debug": "^2.1.0",
+    "enum": "^0.2.6",
+    "event-emitter": "^0.3.1",
     "grunt-contrib-coffee": "^0.12.0",
     "http-status": "^0.1.8",
     "superagent": "^0.21.0"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
+    "grunt-6to5": "^1.0.1",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-jasmine-node": "^0.2.1",
     "grunt-jsdoc": "^0.5.7",
     "grunt-lintspaces": "^0.6.0",
-    "grunt-mocha-test": "~0.10.2",
+    "grunt-mocha-test": "^0.12.4",
+    "grunt-shell": "^1.1.1",
+    "grunt-traceur": "^0.2.12",
+    "mocha": "^2.0.1",
     "should": "~3.3.1",
     "supertest": "~0.11.0",
     "time-grunt": "~0.3.1"

@@ -3,28 +3,19 @@ module.exports = function (grunt) {
   grunt.initConfig({
     jshint: {
       all: [
-        'Gruntfile.js',
+        //'Gruntfile.js',
         'lib/**/*.js',
-        'spec/**/*.js'
+        'test/**/*.js'
       ],
       options: {
         jshintrc: '.jshintrc'
       }
     },
-    jasmine_node: {
-      options: {
-        match: '.',
-        matchall: false,
-        extensions: 'js',
-        specNameMatcher: 'spec'
-      },
-      all: ['spec/']
-    },
     lintspaces: {
       all: {
         lib: [
           'lib/**/*.js',
-          'spec/**/*.js'
+          'test/**/*.js'
         ],
         options: {
           newline: true,
@@ -38,47 +29,64 @@ module.exports = function (grunt) {
     },
     jsdoc: {
       dist: {
-        src: ['lib/**/*.js', 'spec/**/*.js'],
+        src: ['lib/**/*.js'],
         options: {
           destination: 'doc'
         }
       }
     },
-    // Compiles CoffeeScript to JavaScript
-    // Compiles CoffeeScript to JavaScript
-    coffee: {
-      server: {
-        //watch: "server",
 
-        options: {
-          sourceMap: true,
-          sourceRoot: '',
-          bare: true
-        },
-        files: [
-          {
-            //bare: true,
-            expand: true,
-            //cwd: 'server',
-            src: [
-              'lib/**/*.coffee',
-            ],
-            //dest: '',
-            ext: '.js'
-          },
-        ]
+    '6to5': {
+      options: {
+        sourceMap: true,
+        outDir: "out"
+      },
+      dist: {
+        // ['lib/**/*.js', 'test/**/*.js']
+        files: {
+          'out/lib/index.js': 'lib/index.js',
+          'out/lib/cypher-acl.js': 'lib/cypher-acl.js',
+          'out/test/cypher-acl-spec.js': 'test/cypher-acl-spec.js'
+        }
+      }
+    },
+    mochaTest: {
+      options: {
+        reporter: 'spec'
+      },
+      src: ['out/**/*.js']
+    },
+    clean: {
+      all: ['out', 'doc']
+    },
+
+    shell: {
+      //options: {
+      //  stderr: false
+      //},
+      lock_out: {
+        command: 'chmod -R -w out'
+      },
+      unlock_out: {
+        command: 'chmod -R +w out'
       }
     }
+
   });
 
-  grunt.loadNpmTasks('grunt-contrib-coffee');
+  //require('load-grunt-tasks')(grunt);
+
+  grunt.loadNpmTasks('grunt-6to5');
+  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-lintspaces');
-  grunt.loadNpmTasks('grunt-jasmine-node');
   grunt.loadNpmTasks('grunt-jsdoc');
 
-  grunt.registerTask('test', ['coffee','jshint', 'jasmine_node', 'lintspaces']);
+  grunt.registerTask('test', ['6to5', 'shell:lock_out', 'mochaTest', 'jshint', 'lintspaces']);
+  grunt.registerTask('full', ['shell:unlock_out','clean', 'test']);
   grunt.registerTask('doc', ['jsdoc']);
   grunt.registerTask('dev', ['test', 'doc']);
-  grunt.registerTask('default', ['dev']);
+  grunt.registerTask('default', ['test']);
 };
