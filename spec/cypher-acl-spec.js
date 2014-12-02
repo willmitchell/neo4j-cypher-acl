@@ -42,70 +42,11 @@ describe('Recreate test database', function () {
         return;
       }
       debug("count returned: " + JSON.stringify(res));
-      assert.equal(res.data[0][0],0, "count has to be 0");
+      assert.equal(res.data[0][0], 0, "count has to be 0");
       done();
     });
   });
 });
-
-//describe('Neo4J User CRUD', function () {
-//  it('should create a User', function (done) {
-//    cacl.cypher('create (u:User {name:"CRUD"}) return u.name as name', {}, function (err, res) {
-//      if (err) {
-//        debug("fail within neo_dao_spec.js");
-//        return;
-//      }
-//      debug("CREATE returned: " + res);
-//      assert.equal(res.data[0], 'CRUD', "response must include name of CRUD");
-//      done();
-//    });
-//  });
-//  it('should find User named CRUD', function (done) {
-//    cacl.cypher('match (u:User {name:"CRUD"}) return u.name as name limit 1', {}, function (err, res) {
-//      if (err) {
-//        debug("fail within neo_dao_spec.js");
-//        return;
-//      }
-//      debug("MATCH returned: " + res);
-//      assert.equal(res.data[0], 'CRUD', "response must include name of CRUD");
-//      done();
-//    });
-//  });
-//  it('should update User named CRUD to FUD', function (done) {
-//    cacl.cypher('match (u:User {name:"CRUD"}) set u.name="FUD" return u.name as name limit 1', {}, function (err, res) {
-//      if (err) {
-//        debug("fail within neo_dao_spec.js");
-//        return;
-//      }
-//      debug("UPDATE returned: " + res);
-//      assert.equal(res.data[0], 'FUD', "response must include name of FUD");
-//      done();
-//    });
-//  });
-//  it('should delete User named FUD', function (done) {
-//    cacl.cypher('match (u:User) where u.name in ["CRUD","FUD"] delete u return true', {}, function (err, res) {
-//      if (err) {
-//        debug("fail within neo_dao_spec.js");
-//        return;
-//      }
-//      debug("DELETE returned: " + res + "or: [" + res.data[0] + ']');
-//      assert.notStrictEqual(res.data[0], true, "response must include a single data value === true");
-//      done();
-//    });
-//  });
-//  it('should not find any User named FUD or CRUD', function (done) {
-//    cacl.cypher('match (u:User) where u.name="FUD" or u.name="CRUD" return u.name as name limit 1', {}, function (err, res) {
-//      if (err) {
-//        debug("fail within neo_dao_spec.js");
-//        return;
-//      }
-//      debug("MATCH returned: " + res);
-//      assert.equal(res.data[0], undefined, "response for FUD must have an undefined name");
-//      done();
-//    });
-//  });
-//
-//});
 
 var uid = 77;
 
@@ -113,7 +54,7 @@ describe('Neo4J User/Group Ops', function () {
   it('should create a User', function (done) {
     cacl.create_user(uid, function (err, res) {
       if (err) {
-        debug("fail within neo_dao_spec.js");
+        debug("problem creating user");
         return;
       }
       debug("DAO Ops CREATE returned nodeid: " + res);
@@ -124,7 +65,7 @@ describe('Neo4J User/Group Ops', function () {
   it('should verify that the User exists', function (done) {
     cacl.get_user(uid, function (err, res) {
       if (err) {
-        debug("fail within neo_dao_spec.js");
+        debug("problem searching for user");
         return;
       }
       debug("get_user returned: " + res);
@@ -132,25 +73,41 @@ describe('Neo4J User/Group Ops', function () {
       done();
     });
   });
+
+  var aid = "909";
+  it('should create an asset and associate it with the root group', function (done) {
+    cacl.create_asset(uid, aid, "/", function (err, res) {
+      if (err) {
+        debug("problem creating an asset");
+        return cb(err);
+      }
+      debug("create_asset returned: " + res);
+
+      assert.equal(res.aid, aid);
+      done();
+    });
+  });
+
   it('should delete User by uid', function (done) {
     cacl.delete_user(uid, function (err, res) {
       if (err) {
-        debug("fail within neo_dao_spec.js");
+        debug("problem deleting user");
         return;
       }
-      debug("DELETE returned: " + res);
-      assert.notStrictEqual(res.uid, uid, "response must be equal to the uid");
+      debug("DELETE returned: " + JSON.stringify(res));
+
+      assert.equal(res.success, true, "res.success must be true");
       done();
     });
   });
   it('should verify that the User is gone', function (done) {
     cacl.get_user(uid, function (err, res) {
       if (err) {
-        debug("fail within neo_dao_spec.js");
+        debug("problem searching for user");
         return;
       }
       debug("get_user returned: " + res);
-      assert.equal(res.uid, false, "response must be equal to the uid");
+      assert.equal(res.uid, false, "response success must be false");
       done();
     });
   });
