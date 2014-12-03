@@ -13,12 +13,12 @@ var cacl = new CACL(config);
 
 describe('Recreate test database', function () {
   it('should count nodes before deleting', function (done) {
-    cacl.cypher('MATCH (n) RETURN count(*) as count;', {}, function (err, res) {
+    cacl.count_all_nodes(function (err, res) {
       if (err) {
         debug("failed to count nodes");
         return;
       }
-      debug("count returned: " + JSON.stringify(res));
+      debug("count returned: " + res);
       done();
     });
   });
@@ -36,13 +36,13 @@ describe('Recreate test database', function () {
   });
 
   it('should ensure that the db is clear', function (done) {
-    cacl.cypher('MATCH (n) RETURN count(n) as count;', {}, function (err, res) {
+    cacl.count_all_nodes(function (err, res) {
       if (err) {
         debug("failed to count nodes");
         return;
       }
-      debug("count returned: " + JSON.stringify(res));
-      assert.equal(res.data[0][0], 0, "count has to be 0");
+      debug("count returned: " + res);
+      assert.equal(res,0);
       done();
     });
   });

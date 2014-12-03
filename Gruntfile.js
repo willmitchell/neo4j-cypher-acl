@@ -77,7 +77,7 @@ module.exports = function (grunt) {
       src: ['out/**/*.js']
     },
     clean: {
-      all: ['out/**/*', 'doc']
+      all: ['out/**/*','doc']
     },
 
     shell: {
