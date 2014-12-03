@@ -38,16 +38,36 @@ module.exports = function (grunt) {
 
     '6to5': {
       options: {
+        modules: "common",
         sourceMap: true,
+        experimental: true,
+        //sourceMapsInline: true
         outDir: "out"
       },
-      dist: {
-        // ['lib/**/*.js', 'test/**/*.js']
-        files: {
-          'out/lib/index.js': 'lib/index.js',
-          'out/lib/cypher-acl.js': 'lib/cypher-acl.js',
-          'out/test/cypher-acl-spec.js': 'test/cypher-acl-spec.js'
-        }
+      build: {
+        files: [
+          {
+            expand: true,
+            cwd: '.',
+            src: ['lib/**/*.js'],
+            dest: './out'
+          },
+          {
+            expand: true,
+            cwd: '.',
+            src: ['test/**/*.js'],
+            dest: './out'
+          }
+        ],
+        //dist: {
+        //  // ['lib/**/*.js', 'test/**/*.js']
+        //  files: {
+        //    'out/lib': 'lib',
+        //    'out/test': 'test'
+        //    //'out/lib/index.js': 'lib/index.js',
+        //    //'out/lib/cypher-acl.js': 'lib/cypher-acl.js',
+        //    //'out/test/cypher-acl-spec.js': 'test/cypher-acl-spec.js'
+        //  }
       }
     },
     mochaTest: {
@@ -57,7 +77,7 @@ module.exports = function (grunt) {
       src: ['out/**/*.js']
     },
     clean: {
-      all: ['out', 'doc']
+      all: ['out/**/*', 'doc']
     },
 
     shell: {
@@ -65,10 +85,10 @@ module.exports = function (grunt) {
       //  stderr: false
       //},
       lock_out: {
-        command: 'chmod -R -w out'
+        //command: 'chmod -R -w out'
       },
       unlock_out: {
-        command: 'chmod -R +w out'
+        //command: 'chmod -R +w out'
       }
     }
 
@@ -84,8 +104,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-lintspaces');
   grunt.loadNpmTasks('grunt-jsdoc');
 
-  grunt.registerTask('test', ['6to5', 'shell:lock_out', 'mochaTest', 'jshint', 'lintspaces']);
-  grunt.registerTask('full', ['shell:unlock_out','clean', 'test']);
+  grunt.registerTask('test', ['6to5', 'mochaTest', 'jshint', 'lintspaces']);
+  grunt.registerTask('full', [ 'clean', 'test']);
+  //grunt.registerTask('test', ['6to5', /*'shell:lock_out'*/, 'mochaTest', 'jshint', 'lintspaces']);
+  //grunt.registerTask('full', [/*'shell:unlock_out'*/, 'clean', 'test']);
   grunt.registerTask('doc', ['jsdoc']);
   grunt.registerTask('dev', ['test', 'doc']);
   grunt.registerTask('default', ['test']);

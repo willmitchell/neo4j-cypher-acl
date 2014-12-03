@@ -1,6 +1,6 @@
 #node-graph-acl
 
-[https://travis-ci.org/willmitchell/neo4j-cypher-acl.svg?branch=master](https://travis-ci.org/willmitchell/neo4j-cypher-acl)
+[![Build Status](https://travis-ci.org/willmitchell/neo4j-cypher-acl.svg?branch=master)](https://travis-ci.org/willmitchell/neo4j-cypher-acl)
 
 Node Graph Cypher ACL is a module that uses Neo4J and the Cypher query language to provide support for
 Access Control Lists (ACL).
@@ -25,7 +25,8 @@ var config = {
     path: "/db/data/cypher"
   }
 };
-var myAcl = new CACL(config);
+
+var cacl = new CACL(config);
 
 myACL.allow('admin', 'dashboard', ['create', 'read', 'update', 'delete'], function (err, success) {
   // Do something
@@ -43,7 +44,7 @@ npm install node-graph-acl
 
 ## Tests
 
-Tests are done with [Jasmine 2.0](http://jasmine.github.io/2.0/introduction.html). To run them, you have to execute:
+Tests are handled with [Mocha](http://mochajs.org/). To run them, you have to execute:
 ```
 grunt test
 ```

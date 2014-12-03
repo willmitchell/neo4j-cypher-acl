@@ -1,7 +1,7 @@
 var CACL = require("../lib/index.js");
 var debug = require('debug')('CACL-test');
 var assert = require('assert');
-var async = require('async');
+var asyncModule = require('async');
 
 var config = {
   neo4j: {
@@ -142,7 +142,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   };
 
   it('should create a bunch of users', function (done) {
-    async.parallel([
+    asyncModule.parallel([
       function (cb) {
         gen_user("uid1", cb);
       },
@@ -170,7 +170,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   var cids = [];
 
   it('should create connections between users', function (done) {
-    async.parallel([
+    asyncModule.parallel([
       function (cb) {
         cacl.create_user_user_connection("uid1", "uid2", "hello", cb);
       },
@@ -197,7 +197,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
 
   it('should confirm several invitations', function (done) {
 
-    async.parallel([
+    asyncModule.parallel([
       function (cb) {
         cacl.update_connection("uid1", "uid2", true, "hi", cb);
       },
@@ -222,7 +222,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
     });
   });
 
-  it('should verify the Unique connection', function (done) {
+  it('should verify connection status', function (done) {
     cacl.list_connections(uid1, function (err, res) {
       if (err) {
         debug('error: ' + err);
@@ -231,6 +231,8 @@ describe('Neo4J U-U Connection lifecycle', function () {
 
       debug("connections for uid1: " + JSON.stringify(res));
       assert.ok(res, "must have some results");
+      assert.equal(res.cdata.length,3);
+      assert.equal(res.u2data.length,3);
       done();
     });
   });
