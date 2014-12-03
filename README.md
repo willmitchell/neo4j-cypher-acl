@@ -6,7 +6,6 @@ Node Graph Cypher ACL is a module that uses Neo4J and the Cypher query language 
 Access Control Lists (ACL).
 
 This module was inspired by, and some of the implementation was borrowed from [npm package graph-acl](https://github.com/ydigital-factory/node-graph-acl).
-
 The reason I decided to create something new was that I wanted to use Cypher and have a less generic (and chatty) connection to the graph database.
 
 ## Warning Regarding Testing
@@ -17,7 +16,7 @@ Currently, the test code will erase all nodes in the Neo4J database prior to run
 
 ```
 var neo4j = require('node-neo4j');
-var ACL = require('neo4j-cypher-acl');
+var CACL = require('neo4j-cypher-acl');
 
 var config = {
   neo4j: {
@@ -28,8 +27,8 @@ var config = {
 
 var cacl = new CACL(config);
 
-myACL.allow('admin', 'dashboard', ['create', 'read', 'update', 'delete'], function (err, success) {
-  // Do something
+// TODO
+
 });
 
 ```
@@ -47,6 +46,7 @@ npm install node-graph-acl
 Tests are handled with [Mocha](http://mochajs.org/). To run them, you have to execute:
 ```
 grunt test
+
 ```
 
 ## Documentation

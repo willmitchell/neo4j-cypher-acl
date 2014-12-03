@@ -6,7 +6,8 @@ var asyncModule = require('async');
 var config = {
   neo4j: {
     root_url: process.env.NEO4J_ROOT_URL || process.env.GRAPHENEDB_URL || "http://localhost:7474",
-    path: "/db/data/cypher"
+    path: "/db/data/cypher",
+    loud_logging: false
   }
 };
 var cacl = new CACL(config);
@@ -142,6 +143,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   };
 
   it('should create a bunch of users', function (done) {
+
     asyncModule.parallel([
       function (cb) {
         gen_user("uid1", cb);
@@ -235,6 +237,22 @@ describe('Neo4J U-U Connection lifecycle', function () {
       assert.equal(res.u2data.length,3);
       done();
     });
+  });
+
+  it('should terminate a connection', function(done) {
+    cacl.list_connections(uid1, function (err, res) {
+      if (err) {
+        debug('error: ' + err);
+        throw err;
+      }
+
+      debug("connections for uid1: " + JSON.stringify(res));
+      assert.ok(res, "must have some results");
+      assert.equal(res.cdata.length,3);
+      assert.equal(res.u2data.length,3);
+      done();
+    });
+
   });
 
 });
