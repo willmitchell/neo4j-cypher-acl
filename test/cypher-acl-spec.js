@@ -229,9 +229,6 @@ describe('Neo4J U-U Connection lifecycle', function () {
         debug('error: ' + err);
         throw err;
       }
-
-      debug("connections for uid1: " + JSON.stringify(res));
-      assert.ok(res, "must have some results");
       assert.equal(res.cdata.length,3);
       assert.equal(res.u2data.length,3);
       done();
@@ -239,6 +236,19 @@ describe('Neo4J U-U Connection lifecycle', function () {
   });
 
   it('should terminate a connection', function(done) {
+    cacl.terminate_connection("uid1","uid2","sorry but I cannot know you", function (err, res) {
+      if (err) {
+        debug('error: ' + err);
+        throw err;
+      }
+      assert.equal(res.state,"terminated");
+      assert.ok(res.term_note);
+      assert.ok(res.term_at);
+      done();
+    });
+  });
+
+  it('should verify that a connection has been terminated', function (done) {
     cacl.list_connections(uid1, function (err, res) {
       if (err) {
         debug('error: ' + err);
@@ -247,11 +257,10 @@ describe('Neo4J U-U Connection lifecycle', function () {
 
       debug("connections for uid1: " + JSON.stringify(res));
       assert.ok(res, "must have some results");
-      assert.equal(res.cdata.length,3);
-      assert.equal(res.u2data.length,3);
+      assert.equal(res.cdata.length,2);
+      assert.equal(res.u2data.length,2);
       done();
     });
 
-  });
 
 });
