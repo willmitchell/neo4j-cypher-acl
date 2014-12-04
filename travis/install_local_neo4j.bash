@@ -3,7 +3,7 @@
 # Copied from https://github.com/versae/neo4j-rest-client under GPL v3 license.
 #
 
-DEFAULT_VERSION="1.6.3"
+DEFAULT_VERSION="2.1.6"
 VERSION=${1-$DEFAULT_VERSION}
 DIR="neo4j-community-$VERSION"
 FILE="$DIR-unix.tar.gz"
@@ -20,17 +20,7 @@ if [[ ! -d lib/$DIR ]]; then
     [[ -h lib/neo4j ]] && unlink lib/neo4j
     ln -fs $DIR lib/neo4j
     mkdir lib/neo4j/testing/
-    PLUGIN_VERSION="1.6"
-    if [[ $NEO4J_VERSION == 1.5* ]]; then
-        PLUGIN_VERSION="1.5"
-    fi
-    DELETE_DB_PLUGIN_JAR="test-delete-db-extension-$PLUGIN_VERSION.jar"
-    curl -L -o lib/neo4j/testing/$DELETE_DB_PLUGIN_JAR https://github.com/downloads/jexp/neo4j-clean-remote-db-addon/$DELETE_DB_PLUGIN_JAR
-    ln -s ../testing/$DELETE_DB_PLUGIN_JAR lib/neo4j/plugins/$DELETE_DB_PLUGIN_JAR
-    cat >> $SERVER_PROPERTIES_FILE <<EOF
-org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.server.extension.test.delete=/cleandb
-org.neo4j.server.thirdparty.delete.key=supersecretdebugkey!
-EOF
+
 fi
 
 if grep 7474 $SERVER_PROPERTIES_FILE > /dev/null; then

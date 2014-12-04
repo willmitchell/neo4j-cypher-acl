@@ -99,6 +99,22 @@ describe('Neo4J User/Group Ops', function () {
     });
   });
 
+  it('should verify that we now have a tree of assets with 1 asset', function (done) {
+    let cmd = cacl.make_list_assets_cmd(uid);
+    cmd.cb = function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      assert.ok(res.groups);
+      assert.ok(res.assets);
+      assert.equal(res.groups.length,1);
+      assert.equal(res.assets.length,1);
+      done();
+    };
+    cacl.list_assets(cmd);
+  });
+
   aid = "910";
   it('should create another asset and associate it with the second group', function (done) {
     cacl.create_asset(uid, aid, "second", function (err, res) {
@@ -112,7 +128,7 @@ describe('Neo4J User/Group Ops', function () {
     });
   });
 
-  it('should verify that we now have a tree of assets', function (done) {
+  it('should verify that we now have a tree of assets with 2 assets', function (done) {
     let cmd = cacl.make_list_assets_cmd(uid);
     cmd.cb = function (err, res) {
       if (err) {
@@ -121,6 +137,8 @@ describe('Neo4J User/Group Ops', function () {
       assert.ok(res.success);
       assert.ok(res.groups);
       assert.ok(res.assets);
+      assert.equal(res.groups.length,2);
+      assert.equal(res.assets.length,2);
       done();
     };
     cacl.list_assets(cmd);
