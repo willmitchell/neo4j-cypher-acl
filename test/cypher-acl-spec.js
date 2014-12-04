@@ -1,4 +1,5 @@
-var CACL = require("../lib/index.js");
+var CACL = require("../lib/cypher-acl");
+var Commands = require("../lib/commands");
 var debug = require('debug')('CACL-test');
 var assert = require('assert');
 var asyncModule = require('async');
@@ -97,8 +98,8 @@ describe('Neo4J User/Group Ops', function () {
   });
 
   aid = "910";
-  it('should create another asset and associate it with the root group', function (done) {
-    cacl.create_asset(uid, aid, "/", function (err, res) {
+  it('should create another asset and associate it with the second group', function (done) {
+    cacl.create_asset(uid, aid, "second", function (err, res) {
       if (err) {
         throw err;
       }
@@ -108,6 +109,9 @@ describe('Neo4J User/Group Ops', function () {
       done();
     });
   });
+
+
+
   it('should delete User by uid', function (done) {
     cacl.delete_user(uid, function (err, res) {
       if (err) {
