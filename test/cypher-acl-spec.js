@@ -42,11 +42,41 @@ describe('Recreate test database', function () {
         throw err;
       }
       assert.ok(res.success);
-
       assert.equal(res.count, 0);
       done();
     });
   });
+
+  it('should apply constraints and create indices', function (done) {
+    cacl.apply_global_constraints(function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      done();
+    });
+  });
+
+  it('should create the friend role', function (done) {
+    cacl.create_role(function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      done();
+    }, "friend");
+  });
+
+  it('should create the manager role', function (done) {
+    cacl.create_role(function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      done();
+    }, "manager","friend");
+  });
+
 });
 
 var uid = 77;
@@ -144,26 +174,26 @@ describe('Neo4J User/Group Ops', function () {
     cacl.list_assets(cmd);
   });
 
-  it('should delete User by uid', function (done) {
-    cacl.delete_user(uid, function (err, res) {
-      if (err) {
-        throw err;
-      }
-      assert.ok(res.success);
-
-      assert.equal(res.success, true, "res.success must be true");
-      done();
-    });
-  });
-  it('should verify that the User is gone', function (done) {
-    cacl.get_user(uid, function (err, res) {
-      if (err) {
-        throw err;
-      }
-      assert.equal(res.success, false, "response success must be false");
-      done();
-    });
-  });
+  //it('should delete User by uid', function (done) {
+  //  cacl.delete_user(uid, function (err, res) {
+  //    if (err) {
+  //      throw err;
+  //    }
+  //    assert.ok(res.success);
+  //
+  //    assert.equal(res.success, true, "res.success must be true");
+  //    done();
+  //  });
+  //});
+  //it('should verify that the User is gone', function (done) {
+  //  cacl.get_user(uid, function (err, res) {
+  //    if (err) {
+  //      throw err;
+  //    }
+  //    assert.equal(res.success, false, "response success must be false");
+  //    done();
+  //  });
+  //});
 });
 
 
@@ -277,8 +307,19 @@ describe('Neo4J U-U Connection lifecycle', function () {
     });
   });
 
+  it('should grant a friend access', function(done) {
+    cacl.create_grant("uid1","uid2","/","friend", function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      assert.ok(res.grant_node_id);
+      done();
+    });
+  });
+
   it('should terminate a connection', function (done) {
-    cacl.terminate_connection("uid1", "uid2", "sorry but I cannot know you", function (err, res) {
+    cacl.terminate_connection("uid1", "uid3", "sorry but I cannot know you", function (err, res) {
       if (err) {
         throw err;
       }
