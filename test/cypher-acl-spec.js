@@ -70,7 +70,7 @@ describe('Neo4J User/Group Ops', function () {
         return;
       }
       debug("get_user returned: " + res);
-      assert.equal(res.uid, uid, "response must be equal to the uid");
+      assert.ok(res.success);
       done();
     });
   });
@@ -120,7 +120,7 @@ describe('Neo4J User/Group Ops', function () {
         return;
       }
       debug("get_user returned: " + res);
-      assert.equal(res.uid, false, "response success must be false");
+      assert.equal(res.success, false, "response success must be false");
       done();
     });
   });
