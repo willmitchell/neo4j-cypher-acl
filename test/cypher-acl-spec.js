@@ -42,8 +42,7 @@ describe('Recreate test database', function () {
         debug("failed to count nodes");
         return;
       }
-      debug("count returned: " + res);
-      assert.equal(res,0);
+      assert.equal(res.count,0);
       done();
     });
   });
