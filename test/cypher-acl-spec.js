@@ -89,7 +89,9 @@ describe('Neo4J User/Group Ops', function () {
 
   it('should create a second group and associate it with the root group', function (done) {
     cacl.create_group(uid, "second", function (err, res) {
-      if (err) { throw err; }
+      if (err) {
+        throw err;
+      }
       assert.ok(res.success);
 
       assert.ok(res.gnid);
@@ -110,7 +112,19 @@ describe('Neo4J User/Group Ops', function () {
     });
   });
 
-
+  it('should verify that we now have a tree of assets', function (done) {
+    let cmd = cacl.make_list_assets_cmd(uid);
+    cmd.cb = function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      assert.ok(res.groups);
+      assert.ok(res.assets);
+      done();
+    };
+    cacl.list_assets(cmd);
+  });
 
   it('should delete User by uid', function (done) {
     cacl.delete_user(uid, function (err, res) {
