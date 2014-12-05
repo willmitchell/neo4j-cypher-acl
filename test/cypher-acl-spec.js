@@ -80,10 +80,21 @@ describe('Recreate test database', function () {
 });
 
 var uid = 77;
+var uidb = 78;
 
 describe('Neo4J User/Group Ops', function () {
-  it('should create a User', function (done) {
+  it('should create a user a', function (done) {
     cacl.create_user(uid, function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      assert.ok(res.user_node_id);
+      done();
+    });
+  });
+  it('should create a user b', function (done) {
+    cacl.create_user(uidb, function (err, res) {
       if (err) {
         throw err;
       }
@@ -136,24 +147,24 @@ describe('Neo4J User/Group Ops', function () {
         throw err;
       }
       assert.ok(res.success);
-      assert.ok(res.groups);
+      //assert.ok(res.groups);
       assert.ok(res.assets);
-      assert.equal(res.groups.length,1);
+      //assert.equal(res.groups.length,1);
       assert.equal(res.assets.length,1);
       done();
     };
     cacl.list_assets(cmd);
   });
 
-  aid = "910";
+  var aid2 = "910";
   it('should create another asset and associate it with the second group', function (done) {
-    cacl.create_asset(uid, aid, "second", function (err, res) {
+    cacl.create_asset(uid, aid2, "second", function (err, res) {
       if (err) {
         throw err;
       }
       assert.ok(res.success);
 
-      assert.equal(res.aid, aid);
+      assert.equal(res.aid, aid2);
       done();
     });
   });
@@ -165,14 +176,16 @@ describe('Neo4J User/Group Ops', function () {
         throw err;
       }
       assert.ok(res.success);
-      assert.ok(res.groups);
+      //assert.ok(res.groups);
       assert.ok(res.assets);
-      assert.equal(res.groups.length,2);
+      //assert.equal(res.groups.length,2);
       assert.equal(res.assets.length,2);
       done();
     };
     cacl.list_assets(cmd);
   });
+
+
 
   //it('should delete User by uid', function (done) {
   //  cacl.delete_user(uid, function (err, res) {
@@ -198,8 +211,6 @@ describe('Neo4J User/Group Ops', function () {
 
 
 describe('Neo4J U-U Connection lifecycle', function () {
-  var uid1 = "uid1";
-  var uid2 = "uid2";
 
   var user_node_ids = [];
 
@@ -209,7 +220,11 @@ describe('Neo4J U-U Connection lifecycle', function () {
         throw err;
       }
       assert.ok(res.success);
-      cb(null, res);
+      cacl.create_asset(uid, "a1", "/", function (err, res) {
+        if(err){throw err;}
+        assert.ok(res.success);
+        cb(null, res);
+      });
     });
   };
 
@@ -295,7 +310,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   });
 
   it('should verify connection status', function (done) {
-    cacl.list_connections(uid1, function (err, res) {
+    cacl.list_connections("uid1", function (err, res) {
       if (err) {
         throw err;
       }
@@ -318,6 +333,23 @@ describe('Neo4J U-U Connection lifecycle', function () {
     });
   });
 
+  it('should prove that the friend can see the assets', function (done) {
+    let cmd = cacl.make_list_assets_cmd("uid2");
+    cmd.cb = function (err, res) {
+      if (err) {
+        throw err;
+      }
+      assert.ok(res.success);
+      //assert.ok(res.groups);
+      assert.ok(res.assets);
+      //assert.equal(res.groups.length,2);
+      assert.equal(res.assets.length,2);
+      done();
+    };
+    cacl.list_assets(cmd);
+  });
+
+
   it('should terminate a connection', function (done) {
     cacl.terminate_connection("uid1", "uid3", "sorry but I cannot know you", function (err, res) {
       if (err) {
@@ -333,7 +365,7 @@ describe('Neo4J U-U Connection lifecycle', function () {
   });
 
   it('should verify that a connection has been terminated', function (done) {
-    cacl.list_connections(uid1, function (err, res) {
+    cacl.list_connections("uid1", function (err, res) {
       if (err) {
         throw err;
       }
