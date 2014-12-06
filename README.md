@@ -1,12 +1,15 @@
-#node-graph-acl
+#neo4j-cypher-acl
 
 [![Build Status](https://travis-ci.org/willmitchell/neo4j-cypher-acl.svg?branch=master)](https://travis-ci.org/willmitchell/neo4j-cypher-acl)
 
-Node Graph Cypher ACL is a module that uses Neo4J and the Cypher query language to provide support for
-Access Control Lists (ACL).
+Neo4J Cypher ACL is a module that uses Neo4J and its Cypher query language to provide an Access Control Lists (ACL) solution.
 
-This module was inspired by, and some of the implementation was borrowed from [npm package graph-acl](https://github.com/ydigital-factory/node-graph-acl).
-The reason I decided to create something new was that I wanted to use Cypher and have a less generic (and chatty) connection to the graph database.
+This module was inspired by [npm package graph-acl](https://github.com/ydigital-factory/node-graph-acl).
+
+The reason I decided to create something new was that I wanted to use Cypher in order to achieve a solution that scales to millions of nodes/edges.
+
+Currently, almost all ACL-related methods involve a single request/reply cycle; this is hard to achieve with a generic (least common denominator)
+type of approach that relies on multiple hops to traverse paths.
 
 ## Warning Regarding Testing
 
@@ -38,7 +41,7 @@ var cacl = new CACL(config);
 
 To install the project and all its dependencies, you have to execute:
 ```
-npm install node-graph-acl
+npm install neo4j-cypher-acl
 ```
 
 ## Tests

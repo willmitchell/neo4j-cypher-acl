@@ -342,7 +342,8 @@ describe('Neo4J U-U Connection lifecycle', function () {
       assert.ok(res.success);
       //assert.ok(res.groups);
       assert.ok(res.assets);
-      //assert.equal(res.groups.length,2);
+      assert.equal(res.paths.length,2);
+      assert.equal(res.paths[1].length,3);
       assert.equal(res.assets.length,2);
       done();
     };
